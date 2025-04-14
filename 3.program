@@ -1,0 +1,106 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include "QueueOperations.c"
+int main() {
+	int op, x;
+	while(1) {	
+		printf("1.Enqueue 2.Dequeue 3.Display 4.Is Empty 5.Size 6.Exit\n");
+		printf("Enter your option : ");
+		scanf("%d",&op);
+		switch(op) {
+			case 1: 
+				printf("Enter element : ");
+				scanf("%d",&x);
+				enqueue(x);
+				break;
+			case 2: 
+				dequeue();
+				break;
+			case 3: 
+				display();
+				break;
+			case 4:
+				isEmpty();
+				break;
+			case 5:
+				size();
+				break;
+			case 6: exit(0);
+		}
+	}
+}
+
+
+
+
+int N=10;
+//define a variable MAX to 10
+
+int arr[10];//declare the size of the array to be MAX
+
+int front = -1;
+int rear = -1; //define the front and rear to -1
+
+void enqueue(int x){
+	// write your code here to enqueue an element
+	if(front== -1 && rear == -1) {
+		front = 0;
+		rear = 0;
+		arr[rear] = x;
+		printf("Successfully inserted.\n");
+	}
+		else if(rear == 9)
+			printf("Queue is overflow.\n");
+	else {
+		rear++;
+		arr[rear]=x;
+		printf("Successfully inserted.\n");
+	}
+		}
+
+void dequeue() {
+	// write your code here to dequeue an element
+	if(rear == -1 && front == -1) {
+		printf("Queue is underflow.\n");
+	}
+	else if(rear==front) {
+		printf("Deleted element = %d\n",arr[front]);
+	front= -1;
+		rear = -1;
+}
+	else {
+		printf("Deleted element = %d\n",arr[front]);
+		front++;
+	} }
+void display() {
+	int i;// write your code here to display the queue
+	if(rear == -1 && front == -1) {
+		printf("Queue is empty.\n"); 
+	}
+	else {
+		printf("Elements in the queue : ");
+		for(i=front;i<=rear;i++) {
+			
+			printf("%d ",arr[i]); }
+		printf("\n");
+	}
+	
+}
+void size() {
+	// write your code here to get the size of the queue
+	if(front == -1 && rear == -1) {
+		printf("Queue size : 0\n");
+	}
+	else {
+		printf("Queue size : %d\n",rear-front+1);
+	} }
+void isEmpty() {
+	// write your code here to check whether the queue is empty not
+	if(front == -1 && rear == -1) {
+		printf("Queue is empty.\n"); 
+	}
+	else {
+		printf("Queue is not empty.\n");
+	}
+	
+}
