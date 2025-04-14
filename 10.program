@@ -1,0 +1,105 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+struct node*prev;
+int data;
+struct node*next;
+};
+typedef struct node*NODE;
+NODE createNode() {
+	NODE newnode;
+	newnode=(NODE)malloc(sizeof(struct node));
+	newnode->next=NULL;
+	newnode->prev=NULL;
+	return newnode;
+}
+NODE insertionAtEnd(NODE first,int x)
+{
+	NODE newnode;
+	newnode=createNode();
+	newnode->data=x;
+	if(first==NULL)
+	{
+		first=newnode;
+	}
+	else
+	{
+		NODE lastnode=first;
+		while(lastnode->next!=NULL)
+			{
+				lastnode=lastnode->next;
+			}
+		lastnode->next=newnode;
+		newnode->prev=lastnode;
+	}
+	return first;
+}
+int search (NODE first,int x)
+{
+	NODE lastnode=first;
+	int a=0;
+	NODE prevnode;
+	while(lastnode->next!=NULL)
+		{
+			if(lastnode->data==x)
+			{
+				a++;
+				prevnode->next=lastnode->next;
+				lastnode->next->prev=prevnode->next;
+				return a;
+			}
+			prevnode=lastnode;
+			lastnode=lastnode->next;
+		}
+	return 0;
+}
+NODE delete(NODE first)
+	{
+	int x;
+printf("Enter number to delete: ");
+scanf("%d",&x);
+int a = search (first,x);
+if(a==0)
+{
+	printf("%d not found\n",x);
+	return first;
+}
+else {
+	return first;
+}
+	}
+void display(NODE first) {
+	NODE temp=first;
+	if(first==NULL) {
+		printf("DLL is empty.\n");
+	}
+	else {
+		while(temp->next!=NULL){
+			printf("%d\t",temp->data);
+		temp=temp->next;
+	}
+	printf("%d\t\n",temp->data);
+	}
+}
+int main() {
+	NODE first=NULL;
+	int op,x;
+	while(1) {
+		printf("Operations on doubly linked list\n1.Insert\n2.Remove\n3.Display\n0.Exit\n");
+		printf("Enter Choice 0-4?: ");
+		scanf("%d",&op);
+		switch(op) {
+			case 0: exit(0);
+			case 1: printf("Enter number: ");
+			scanf("%d",&x);
+			first=insertionAtEnd(first,x);
+			break;
+			case 2:
+			first=delete(first);
+			break;
+			case 3:display(first);
+			break;
+		}
+	}
+}
