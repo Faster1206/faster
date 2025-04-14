@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define STACK_MAX_SIZE 10
+#include "StackOperations.c"
+
+int main() {
+	int op, x;
+	while(1) {	
+		printf("1.Push 2.Pop 3.Display 4.Is Empty 5.Peek 6.Exit\n");
+		printf("Enter your option : ");
+		scanf("%d", &op);
+		switch(op) {
+			case 1: 
+				printf("Enter element : ");
+				scanf("%d", &x);
+				push(x);
+				break;
+			case 2:
+				pop();
+				break;
+			case 3: 
+				display();
+				break;
+			case 4:
+				isEmpty();
+				break;
+			case 5:
+				peek();
+				break;
+			case 6: 
+				exit(0);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+int top = -1;
+int stack[10];
+//declare the size of the array
+
+//define the top to -1
+
+
+void push(int element) {
+	//write your code here to push an element
+	if(top==9) {
+		printf("Stack is overflow.\n");
+	}
+	else {
+		top++;
+		stack[top]=element;
+		printf("Successfully pushed.\n");
+		
+		
+	}
+	
+	
+	
+}
+
+void display() {
+	int i;
+	//write your code here to display the stack
+	if(top==-1)
+		printf("Stack is empty.\n");
+	else {
+		printf("Elements of the stack are : ");
+		for(i=top;i>=0;i--) {
+			printf("%d ",stack[i]);
+		}
+		printf("\n");
+	}
+}
+
+void pop() {
+	//write your code here to pop an element
+	if(top==-1)
+		printf("Stack is underflow.\n");
+	else {
+		printf("Popped value = %d\n",stack[top]);
+		top--;
+	}
+	
+}
+
+void peek(){
+	//write your code here to find the peek element
+if(top==-1)
+	printf("Stack is underflow.\n");
+	else {
+		printf("Peek value = %d\n",stack[top]);
+	}
+}
+
+void isEmpty() {
+	//write your code here to check whether the stack is empty not
+	if(top==-1)
+		printf("Stack is empty.\n");
+	else {
+		printf("Stack is not empty.\n");
+	}
+	
+}
