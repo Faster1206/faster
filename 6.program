@@ -1,0 +1,91 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node {
+int data;
+struct node* next;
+};
+typedef struct node* NODE;
+NODE createNode() {
+	NODE newnode;
+	newnode=(NODE)malloc(sizeof(struct node));
+	newnode->next=NULL;
+	return newnode;
+}
+NODE insertAtEnd(NODE first,int x) {
+	NODE newnode=createNode();
+	newnode->data=x;
+	if(first==NULL) {
+		first=newnode;
+	}
+	else {
+		NODE lastnode=first;
+		while(lastnode->next!=NULL) {
+			lastnode=lastnode->next;
+		}
+		lastnode->next=newnode;
+	}
+	return first;
+}
+int search(NODE first,int x) {
+	int pos=0;
+	if(first==NULL) {
+		return pos;
+	}
+	NODE lastnode=first;
+	while(lastnode!=NULL) {
+		pos++;
+		if(lastnode->data==x) {
+			return pos;
+		}
+		lastnode=lastnode->next;
+	}
+	return 0;
+}
+void traversal(NODE first) {
+	NODE temp=first;
+	while(temp!=NULL) {
+		printf("%d ",temp->data);
+		temp=temp->next;
+	}
+}
+NODE deleteAtposition(NODE first,int pos) {
+	NODE lastnode=first,prevnode;
+	if(first==NULL) {
+		return first;
+	}
+	if(pos==1) {
+		first=first->next;
+	}
+	else {
+		for(int i=1;i<pos&&lastnode!=NULL;i++) {
+			prevnode=lastnode;
+			lastnode=lastnode->next;
+		}
+		if(lastnode==NULL || pos<=0) {
+			return first;
+		}
+		prevnode->next=lastnode->next;
+		free(lastnode);
+	}
+	return first;
+}
+void main() {
+	NODE first=NULL;
+	int n,x,op,pos,key,i=0;
+	scanf("%d",&n);
+	while(i<n) {
+		scanf("%d",&op);
+		switch(op) {
+			case 1 :scanf("%d",&x);
+			first=insertAtEnd(first,x);
+				break;
+			case 2 :scanf("%d",&key);
+			pos=search(first,key);
+			first=deleteAtposition(first,pos);
+			break;
+			case 3 : exit(0);
+		}
+		i++;
+	}
+	traversal(first);
+}
