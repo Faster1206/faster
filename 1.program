@@ -1,124 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
+// Week 3: Implementation of hamming code algorithm
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Page</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f0f0f0;
-        }
+#include<stdio.h>
+#include<string.h>
 
-        .container {
-            max-width: 500px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            margin-top: 50px;
-        }
+char XOR(char a,char b,char c,char d);
 
-        .form-group label {
-            font-weight: bold;
-            color: #555;
-        }
+void main()
+{
+    char data[10],r[3],syn[10],code[10];
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-    </style>
-</head>
+    printf("this works for message of 4bits in size\n");
+    gets(data);
 
-<body>
-    <div class="container">
-        <form id="registrationForm" class="needs-validation" action="./login.html" novalidate>
-            <h1 class="mb-4 text-center">Registration Form</h1>
-            <div class="form-group">
-                <label for="firstname">Firstname:</label>
-                <input type="text" class="form-control" id="firstname" name="firstname" required>
-                <div class="invalid-feedback">Please provide a valid firstname.</div>
-            </div>
-            <div class="form-group">
-                <label for="middlename">Middlename:</label>
-                <input type="text" class="form-control" id="middlename" name="middlename">
-            </div>
-            <div class="form-group">
-                <label for="lastname">Lastname:</label>
-                <input type="text" class="form-control" id="lastname" name="lastname" required>
-                <div class="invalid-feedback">Please provide a valid lastname.</div>
-            </div>
-            <div class="form-group">
-                <label for="course">Course:</label>
-                <select class="form-control" id="course" name="course" required>
-                    <option value="">Choose...</option>
-                    <option value="B.Tech">B.Tech</option>
-                    <option value="BCA">BCA</option>
-                    <option value="BBA">BBA</option>
-                    <option value="MBA">MBA</option>
-                    <option value="MCA">MCA</option>
-                    <option value="M.Tech">M.Tech</option>
-                </select>
-                <div class="invalid-feedback">Please select a course.</div>
-            </div>
-            <div class="form-group">
-                <label>Gender:</label>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
-                    <label class="form-check-label" for="male">Male</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" required>
-                    <label class="form-check-label" for="female">Female</label>
-                </div>
-                <div class="invalid-feedback">Please select a gender.</div>
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone:</label>
-                <input type="text" class="form-control" id="phone" name="phone" pattern="[0-9]{10}" maxlength="10"
-                    required>
-                <div class="invalid-feedback">Please provide a valid 10-digit phone number.</div>
-            </div>
-            <div class="form-group">
-                <label for="address">Address:</label>
-                <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
-                <div class="invalid-feedback">Please provide a valid address.</div>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
-            </div>
-        </form>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        (function () {
-            'use strict';
-            window.addEventListener('load', function () {
+    printf("redundant bits are:");
+    r[2]=data[1]^data[2]^data[3];
+    r[1]=data[0]^data[1]^data[2];
+    r[0]=data[0]^data[2]^data[3]; 
+    r[3]='\0';
 
-                var forms = document.getElementsByClassName('needs-validation');
+    puts(r);
+    strcat(data,r);
+    printf("\n%s",data);
 
-                var validation = Array.prototype.filter.call(forms,
-                    function (form) {
-                        form.addEventListener('submit', function (event) {
-                            if (form.checkValidity() === false) {
-                                event.preventDefault();
-                                event.stopPropagation();
-                            }
-                            form.classList.add('was-validated');
-                        }, false);
-                    });
-            }, false);
-        })();
-        function resetForm() {
-            document.getElementById("registrationForm").reset();
-        }
-    </script>
-</body>
+    printf("\nenter receiver’s side code word\n");
+    gets(code);
 
-</html>
+    printf("syndrome bits are\n"); 
+    fflush(stdin);
+
+    syn[2]=XOR(code[1],code[2],code[3],code[6]);
+    syn[1]=XOR(code[0],code[1],code[2],code[5]);
+    syn[0]=XOR(code[0],code[2],code[3],code[4]); 
+    syn[3]='\0';
+
+    printf("%s",syn);
+    
+    if(syn[0]=='0'&&syn[1]=='0'&&syn[2]=='0')
+        printf("No Error");
+    else
+    if(syn[0]=='0'&&syn[1]=='0'&&syn[2]=='1')
+        printf("error is in code[6] or Q0");
+    else
+    if(syn[0]=='0'&&syn[1]=='1'&&syn[2]=='1')
+        printf("error is in code[5] or Q1");
+    else
+    if(syn[0]=='0'&&syn[1]=='1'&&syn[2]=='0')
+        printf("error is in code[1] or B2");
+    else
+    if(syn[0]=='1'&&syn[1]=='0'&&syn[2]=='0')
+        printf("error is in code[4] or Q2");
+    else
+    if(syn[0]=='1'&&syn[1]=='0'&&syn[2]=='1')
+        printf("error is in code[3] or B0");
+    else
+    if(syn[0]=='1'&&syn[1]=='1'&&syn[2]=='0')
+        printf("error is in code[0] or B3");
+    else
+        printf("error is in code[2] or B1");
+}
+
+char XOR(char a,char b,char c,char d)
+{
+    char x;
+    x= a^b^c;
+    if(x==d)
+        return '0';
+    else
+        return '1';
+}
