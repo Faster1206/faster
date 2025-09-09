@@ -1,70 +1,51 @@
-// Week 3: Implementation of hamming code algorithm
+import 'package:flutter/material.dart';
 
-#include<stdio.h>
-#include<string.h>
+void main() => runApp(MyApp());
 
-char XOR(char a,char b,char c,char d);
-
-void main()
-{
-    char data[10],r[3],syn[10],code[10];
-
-    printf("this works for message of 4bits in size\n");
-    gets(data);
-
-    printf("redundant bits are:");
-    r[2]=data[1]^data[2]^data[3];
-    r[1]=data[0]^data[1]^data[2];
-    r[0]=data[0]^data[2]^data[3]; 
-    r[3]='\0';
-
-    puts(r);
-    strcat(data,r);
-    printf("\n%s",data);
-
-    printf("\nenter receiver’s side code word\n");
-    gets(code);
-
-    printf("syndrome bits are\n"); 
-    fflush(stdin);
-
-    syn[2]=XOR(code[1],code[2],code[3],code[6]);
-    syn[1]=XOR(code[0],code[1],code[2],code[5]);
-    syn[0]=XOR(code[0],code[2],code[3],code[4]); 
-    syn[3]='\0';
-
-    printf("%s",syn);
-    
-    if(syn[0]=='0'&&syn[1]=='0'&&syn[2]=='0')
-        printf("No Error");
-    else
-    if(syn[0]=='0'&&syn[1]=='0'&&syn[2]=='1')
-        printf("error is in code[6] or Q0");
-    else
-    if(syn[0]=='0'&&syn[1]=='1'&&syn[2]=='1')
-        printf("error is in code[5] or Q1");
-    else
-    if(syn[0]=='0'&&syn[1]=='1'&&syn[2]=='0')
-        printf("error is in code[1] or B2");
-    else
-    if(syn[0]=='1'&&syn[1]=='0'&&syn[2]=='0')
-        printf("error is in code[4] or Q2");
-    else
-    if(syn[0]=='1'&&syn[1]=='0'&&syn[2]=='1')
-        printf("error is in code[3] or B0");
-    else
-    if(syn[0]=='1'&&syn[1]=='1'&&syn[2]=='0')
-        printf("error is in code[0] or B3");
-    else
-        printf("error is in code[2] or B1");
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Flutter Demo Application",
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: MyHomePage(),
+    );
+  }
 }
 
-char XOR(char a,char b,char c,char d)
-{
-    char x;
-    x= a^b^c;
-    if(x==d)
-        return '0';
-    else
-        return '1';
+class MyHomePage extends StatefulWidget {
+  @override
+  MyHomePageState createState() => MyHomePageState();
+}
+
+class MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Gesture Example"),
+      ),
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            print("Box Clicked!");
+          },
+          child: Container(
+            height: 60.0,
+            width: 120.0,
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Colors.blueGrey,
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Center(
+              child: Text("Click Me"),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
