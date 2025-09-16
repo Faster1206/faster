@@ -1,49 +1,127 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Flutter Demo Application",
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: MyHomePage(),
+      debugShowCheckedModeBanner: false,
+      title: 'Registration Form',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const RegisterPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
-  MyHomePageState createState() => MyHomePageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class MyHomePageState extends State<MyHomePage> {
+class _RegisterPageState extends State<RegisterPage> {
+  // Controllers
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController mobileController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Gesture Example"),
+        title: const Text("Registration Page"),
       ),
-      body: Center(
-        child: GestureDetector(
-          onTap: () {
-            print("Box Clicked!");
-          },
-          child: Container(
-            height: 60.0,
-            width: 120.0,
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Colors.blueGrey,
-              borderRadius: BorderRadius.circular(15.0),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            const Text("Name"),
+            const SizedBox(height: 5),
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Enter Name",
+              ),
             ),
-            child: Center(
-              child: Text("Click Me"),
+            const SizedBox(height: 10),
+
+            const Text("Email"),
+            const SizedBox(height: 5),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Enter Email",
+              ),
             ),
-          ),
+            const SizedBox(height: 10),
+
+            const Text("Mobile"),
+            const SizedBox(height: 5),
+            TextField(
+              controller: mobileController,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Enter Mobile Number",
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            const Text("Address"),
+            const SizedBox(height: 5),
+            TextField(
+              controller: addressController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Enter Address",
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                // Print values in console
+                print("Name: ${nameController.text}");
+                print("Email: ${emailController.text}");
+                print("Mobile: ${mobileController.text}");
+                print("Address: ${addressController.text}");
+
+                // Show dialog with entered data
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Registered Data"),
+                    content: Text(
+                      "Name: ${nameController.text}\n"
+                      "Email: ${emailController.text}\n"
+                      "Mobile: ${mobileController.text}\n"
+                      "Address: ${addressController.text}",
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("OK"),
+                      )
+                    ],
+                  ),
+                );
+              },
+              child: const Text(
+                "Register",
+                style: TextStyle(fontSize: 20),
+              ),
+            )
+          ],
         ),
       ),
     );
