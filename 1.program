@@ -1,128 +1,125 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Registration Form',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const RegisterPage(),
+void main() => runApp(
+      MaterialApp(
+        home: RegistrationForm(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
-  }
+
+class RegistrationForm extends StatefulWidget {
+  @override
+  _RegistrationFormState createState() => _RegistrationFormState();
 }
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class _RegistrationFormState extends State<RegistrationForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _first = TextEditingController();
+  final _last = TextEditingController();
+  final _email = TextEditingController();
+  final _phone = TextEditingController();
+  final _address = TextEditingController();
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
+  void dispose() {
+    // Dispose controllers to free memory
+    _first.dispose();
+    _last.dispose();
+    _email.dispose();
+    _phone.dispose();
+    _address.dispose();
+    super.dispose();
+  }
 
-class _RegisterPageState extends State<RegisterPage> {
-  // Controllers
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController mobileController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Success"),
+          content: Text("Welcome, ${_first.text} ${_last.text}!"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  InputDecoration _dec(String label) => InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Registration Page"),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            const Text("Name"),
-            const SizedBox(height: 5),
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Enter Name",
+      appBar: AppBar(title: const Text("Registration Form")),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              _field(_first, "First Name"),
+              _field(_last, "Last Name"),
+              _field(
+                _email,
+                "Email",
+                type: TextInputType.emailAddress,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return "Enter email";
+                  if (!RegExp(r'\S+@\S+\.\S+').hasMatch(v)) {
+                    return "Invalid email";
+                  }
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 10),
-
-            const Text("Email"),
-            const SizedBox(height: 5),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Enter Email",
+              _field(
+                _phone,
+                "Phone Number",
+                type: TextInputType.phone,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return "Enter phone";
+                  if (!RegExp(r'^\d{10,15}$').hasMatch(v)) {
+                    return "Invalid phone number";
+                  }
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 10),
-
-            const Text("Mobile"),
-            const SizedBox(height: 5),
-            TextField(
-              controller: mobileController,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Enter Mobile Number",
+              _field(_address, "Address", lines: 2),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _submit,
+                child: const Text("Register"),
               ),
-            ),
-            const SizedBox(height: 10),
-
-            const Text("Address"),
-            const SizedBox(height: 5),
-            TextField(
-              controller: addressController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Enter Address",
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: () {
-                // Print values in console
-                print("Name: ${nameController.text}");
-                print("Email: ${emailController.text}");
-                print("Mobile: ${mobileController.text}");
-                print("Address: ${addressController.text}");
-
-                // Show dialog with entered data
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text("Registered Data"),
-                    content: Text(
-                      "Name: ${nameController.text}\n"
-                      "Email: ${emailController.text}\n"
-                      "Mobile: ${mobileController.text}\n"
-                      "Address: ${addressController.text}",
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("OK"),
-                      )
-                    ],
-                  ),
-                );
-              },
-              child: const Text(
-                "Register",
-                style: TextStyle(fontSize: 20),
-              ),
-            )
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _field(
+    TextEditingController c,
+    String label, {
+    TextInputType type = TextInputType.text,
+    int lines = 1,
+    String? Function(String?)? validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: c,
+        decoration: _dec(label),
+        keyboardType: type,
+        maxLines: lines,
+        validator:
+            validator ?? (v) => v == null || v.isEmpty ? "Enter $label" : null,
       ),
     );
   }
