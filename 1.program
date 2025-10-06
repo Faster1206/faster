@@ -1,126 +1,90 @@
-import 'package:flutter/material.dart';
+#include <stdio.h>
+#define MAX 20
+#define INF 99999 // large number to represent infinity
 
-void main() => runApp(
-      MaterialApp(
-        home: RegistrationForm(),
-        debugShowCheckedModeBanner: false,
-      ),
-    );
+// Function to find the vertex with the minimum distance value
+int minDistance(int dist[], int visited[], int V) {
+    int min = INF, min_index = -1;
+    int v;
 
-class RegistrationForm extends StatefulWidget {
-  @override
-  _RegistrationFormState createState() => _RegistrationFormState();
+    for (v = 1; v <= V; v++) {
+        if (!visited[v] && dist[v] <= min) {
+            min = dist[v];
+            min_index = v;
+        }
+    }
+    return min_index;
 }
 
-class _RegistrationFormState extends State<RegistrationForm> {
-  final _formKey = GlobalKey<FormState>();
-
-  final _first = TextEditingController();
-  final _last = TextEditingController();
-  final _email = TextEditingController();
-  final _phone = TextEditingController();
-  final _address = TextEditingController();
-
-  @override
-  void dispose() {
-    // Dispose controllers to free memory
-    _first.dispose();
-    _last.dispose();
-    _email.dispose();
-    _phone.dispose();
-    _address.dispose();
-    super.dispose();
-  }
-
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text("Success"),
-          content: Text("Welcome, ${_first.text} ${_last.text}!"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("OK"),
-            )
-          ],
-        ),
-      );
+// Function to print the constructed distance array
+void printSolution(int dist[], int src, int V) {
+    int i;
+    printf("\nVertex\tDistance from Source (%d)\n", src);
+    for (i = 1; i <= V; i++) {
+        if (dist[i] == INF)
+            printf("%d\t\tINF\n", i);
+        else
+            printf("%d\t\t%d\n", i, dist[i]);
     }
-  }
+}
 
-  InputDecoration _dec(String label) => InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-      );
+// Dijkstra's algorithm implementation
+void dijkstra(int graph[MAX][MAX], int src, int V) {
+    int dist[MAX];    // dist[i] will hold the shortest distance from src to i
+    int visited[MAX]; // visited[i] = 1 if vertex i is finalized
+    int i, count, v;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Registration Form")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              _field(_first, "First Name"),
-              _field(_last, "Last Name"),
-              _field(
-                _email,
-                "Email",
-                type: TextInputType.emailAddress,
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Enter email";
-                  if (!RegExp(r'\S+@\S+\.\S+').hasMatch(v)) {
-                    return "Invalid email";
-                  }
-                  return null;
-                },
-              ),
-              _field(
-                _phone,
-                "Phone Number",
-                type: TextInputType.phone,
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Enter phone";
-                  if (!RegExp(r'^\d{10,15}$').hasMatch(v)) {
-                    return "Invalid phone number";
-                  }
-                  return null;
-                },
-              ),
-              _field(_address, "Address", lines: 2),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submit,
-                child: const Text("Register"),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+    // Initialize all distances as INFINITE and visited[] as 0
+    for (i = 1; i <= V; i++) {
+        dist[i] = INF;
+        visited[i] = 0;
+    }
 
-  Widget _field(
-    TextEditingController c,
-    String label, {
-    TextInputType type = TextInputType.text,
-    int lines = 1,
-    String? Function(String?)? validator,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: TextFormField(
-        controller: c,
-        decoration: _dec(label),
-        keyboardType: type,
-        maxLines: lines,
-        validator:
-            validator ?? (v) => v == null || v.isEmpty ? "Enter $label" : null,
-      ),
-    );
-  }
+    // Distance of source vertex from itself is always 0
+    dist[src] = 0;
+
+    // Find shortest path for all vertices
+    for (count = 1; count <= V - 1; count++) {
+        // Pick the minimum distance vertex not yet processed
+        int u = minDistance(dist, visited, V);
+        if (u == -1)
+            break; // no reachable vertex left
+
+        // Mark the picked vertex as processed
+        visited[u] = 1;
+
+        // Update dist[v]
+        for (v = 1; v <= V; v++) {
+            if (!visited[v] && graph[u][v] && dist[u] != INF &&
+                dist[u] + graph[u][v] < dist[v]) {
+                dist[v] = dist[u] + graph[u][v];
+            }
+        }
+    }
+
+    // Print the constructed distance array
+    printSolution(dist, src, V);
+}
+
+// Main function
+int main() {
+    int V, i, j, source;
+    int graph[MAX][MAX];
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &V);
+
+    printf("\nEnter the adjacency matrix (0 if no edge):\n");
+    for (i = 1; i <= V; i++) {
+        for (j = 1; j <= V; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    printf("\nEnter the source vertex (1 to %d): ", V);
+    scanf("%d", &source);
+
+    dijkstra(graph, source, V);
+
+    return 0;
 }
