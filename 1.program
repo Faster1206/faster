@@ -1,90 +1,94 @@
-#include <stdio.h>
-#define MAX 20
-#define INF 99999 // large number to represent infinity
-
-// Function to find the vertex with the minimum distance value
-int minDistance(int dist[], int visited[], int V) {
-    int min = INF, min_index = -1;
-    int v;
-
-    for (v = 1; v <= V; v++) {
-        if (!visited[v] && dist[v] <= min) {
-            min = dist[v];
-            min_index = v;
-        }
-    }
-    return min_index;
-}
-
-// Function to print the constructed distance array
-void printSolution(int dist[], int src, int V) {
-    int i;
-    printf("\nVertex\tDistance from Source (%d)\n", src);
-    for (i = 1; i <= V; i++) {
-        if (dist[i] == INF)
-            printf("%d\t\tINF\n", i);
-        else
-            printf("%d\t\t%d\n", i, dist[i]);
-    }
-}
-
-// Dijkstra's algorithm implementation
-void dijkstra(int graph[MAX][MAX], int src, int V) {
-    int dist[MAX];    // dist[i] will hold the shortest distance from src to i
-    int visited[MAX]; // visited[i] = 1 if vertex i is finalized
-    int i, count, v;
-
-    // Initialize all distances as INFINITE and visited[] as 0
-    for (i = 1; i <= V; i++) {
-        dist[i] = INF;
-        visited[i] = 0;
-    }
-
-    // Distance of source vertex from itself is always 0
-    dist[src] = 0;
-
-    // Find shortest path for all vertices
-    for (count = 1; count <= V - 1; count++) {
-        // Pick the minimum distance vertex not yet processed
-        int u = minDistance(dist, visited, V);
-        if (u == -1)
-            break; // no reachable vertex left
-
-        // Mark the picked vertex as processed
-        visited[u] = 1;
-
-        // Update dist[v]
-        for (v = 1; v <= V; v++) {
-            if (!visited[v] && graph[u][v] && dist[u] != INF &&
-                dist[u] + graph[u][v] < dist[v]) {
-                dist[v] = dist[u] + graph[u][v];
-            }
-        }
-    }
-
-    // Print the constructed distance array
-    printSolution(dist, src, V);
-}
-
-// Main function
-int main() {
-    int V, i, j, source;
-    int graph[MAX][MAX];
-
-    printf("Enter the number of vertices: ");
-    scanf("%d", &V);
-
-    printf("\nEnter the adjacency matrix (0 if no edge):\n");
-    for (i = 1; i <= V; i++) {
-        for (j = 1; j <= V; j++) {
-            scanf("%d", &graph[i][j]);
-        }
-    }
-
-    printf("\nEnter the source vertex (1 to %d): ", V);
-    scanf("%d", &source);
-
-    dijkstra(graph, source, V);
-
-    return 0;
+import 'package:flutter/material.dart';  
+import 'package:table_calendar/table_calendar.dart';  
+  
+void main() => runApp(MyApp());  
+  
+class MyApp extends StatelessWidget {  
+  @override  
+  Widget build(BuildContext context) {  
+    return MaterialApp(  
+      theme: ThemeData(  
+        primarySwatch: Colors.green,  
+      ),  
+      home: HomeCalendarPage(),  
+    );  
+  }  
+}  
+  
+class HomeCalendarPage extends StatefulWidget {  
+  @override  
+  _HomeCalendarPageState createState() => _HomeCalendarPageState();  
+}  
+  
+class _HomeCalendarPageState extends State<HomeCalendarPage> {  
+  CalendarController _controller;  
+  
+  @override  
+  void initState() {  
+    super.initState();  
+    _controller = CalendarController();  
+  }  
+  
+  @override  
+  Widget build(BuildContext context) {  
+    return Scaffold(  
+      appBar: AppBar(  
+        title: Text('Flutter Calendar Example'),  
+      ),  
+      body: SingleChildScrollView(  
+        child: Column(  
+          crossAxisAlignment: CrossAxisAlignment.start,  
+          children: <Widget>[  
+            TableCalendar(  
+              initialCalendarFormat: CalendarFormat.month,  
+              calendarStyle: CalendarStyle(  
+                  todayColor: Colors.blue,  
+                  selectedColor: Theme.of(context).primaryColor,  
+                  todayStyle: TextStyle(  
+                      fontWeight: FontWeight.bold,  
+                      fontSize: 22.0,  
+                      color: Colors.white)  
+              ),  
+              headerStyle: HeaderStyle(  
+                centerHeaderTitle: true,  
+                formatButtonDecoration: BoxDecoration(  
+                  color: Colors.brown,  
+                  borderRadius: BorderRadius.circular(22.0),  
+                ),  
+                formatButtonTextStyle: TextStyle(color: Colors.white),  
+                formatButtonShowsNext: false,  
+              ),  
+              startingDayOfWeek: StartingDayOfWeek.monday,  
+              onDaySelected: (date, events) {  
+                print(date.toUtc());  
+              },  
+              builders: CalendarBuilders(  
+                selectedDayBuilder: (context, date, events) => Container(  
+                    margin: const EdgeInsets.all(5.0),  
+                    alignment: Alignment.center,  
+                    decoration: BoxDecoration(  
+                        color: Theme.of(context).primaryColor,  
+                        borderRadius: BorderRadius.circular(8.0)),  
+                    child: Text(  
+                      date.day.toString(),  
+                      style: TextStyle(color: Colors.white),  
+                    )),  
+                todayDayBuilder: (context, date, events) => Container(  
+                    margin: const EdgeInsets.all(5.0),  
+                    alignment: Alignment.center,  
+                    decoration: BoxDecoration(  
+                        color: Colors.blue,  
+                        borderRadius: BorderRadius.circular(8.0)),  
+                    child: Text(  
+                      date.day.toString(),  
+                      style: TextStyle(color: Colors.white),  
+                    )),  
+              ),  
+              calendarController: _controller,  
+            )  
+          ],  
+        ),  
+      ),  
+    );  
+  }  
 }
