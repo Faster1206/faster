@@ -1,46 +1,70 @@
-Week 8: Now obtain Routing table art each node using distance vector routing algorithm
-#include<stdio.h>
-#include<stdlib.h>
-int d[10][10], via[10][10];
-int main()
-{
-inti,j, k, n, g[10][10];
-printf("\nEnter the no of nodes : ");
-scanf("%d", &n);
-for(i = 0; i<n; i++)
-{
-printf("Enter the record for route %c \n", i+97);
-for(j = 0; j<n;j++)
-{
-printf("(%c : %c) :: ", i+97, j+97);
-scanf("%d", &g[i][j]); if(g[i][j] != 999)
-d[i][j] = 1;
-}
-}
-for(i = 0; i<n; i++)
-for(j = 0; j<n;j++)
-via[i][j] = i;
-for(i = 0; i<n; i++)
-{
-for(j = 0; j<n;j++)
-if(d[i][j] == 1)
-for(k = 0; k<n; k++)
-if(g[i][j] + g[j][k] < g[i][k])
-{
-g[i][k] = g[i][j] + g[j][k];
-via[i][k] = j;
-}
-}
-for(i = 0; i<n; i++)
-{
-printf("cost of route %c :\n",i+97);
-for(j = 0; j<n;j++)
-printf("%c : %d via %c \n", j+97, g[i][j], via[i][j]+ 97);
-}
-return 0;
-} 
+import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
+void main() {
+  runApp(MyApp());
+}
 
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: AnimatedTextScreen(),
+    );
+  }
+}
 
-Output:
-Enter the no of nodes : 4 
+class AnimatedTextScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Animated Text Example'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Typewriter animated text
+            AnimatedTextKit(
+              animatedTexts: [
+                TypewriterAnimatedText(
+                  'Welcome to Flutter!',
+                  textStyle: TextStyle(
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                  speed: Duration(milliseconds: 200), // Speed of typing
+                ),
+              ],
+              totalRepeatCount: 1, // Number of times the animation repeats
+              pause: Duration(milliseconds: 1000), // Pause before it repeats
+              displayFullTextOnTap: true,
+              stopPauseOnTap: true,
+            ),
+            SizedBox(height: 50), // Spacer between texts
+
+            // Fade animated text
+            AnimatedTextKit(
+              animatedTexts: [
+                FadeAnimatedText(
+                  'Flutter is amazing!',
+                  textStyle: TextStyle(
+                    fontSize: 28.0,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+              totalRepeatCount: 3, // Repeat 3 times
+              pause: Duration(milliseconds: 500), // Pause between fades
+              displayFullTextOnTap: true,
+              stopPauseOnTap: true,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
